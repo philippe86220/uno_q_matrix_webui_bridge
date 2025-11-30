@@ -96,6 +96,8 @@ bridge.call("set_matrix_frame", v0, v1, v2, v3)
 Ce qui déclenche l’exécution de la fonction `set_matrix_frame(...)` côté STM32 (prévue dans `sketch.ino` via `Bridge.provide(...)`).
 
 - La fonction renvoie enfin une réponse JSON simple : `{"status": "ok"}`.
+
+---
   
 # 🔷 5. Transmission au STM32 avec `Bridge.call(...)`
 
@@ -117,7 +119,7 @@ Le Bridge se charge :
 
 Dans ce projet, la fonction STM32 applique directement `matrixWrite()` puis se termine, il n’y a donc pas de valeur de retour particulière.
 
----
+
 
 ---
 

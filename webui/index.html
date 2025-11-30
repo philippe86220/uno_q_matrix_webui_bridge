@@ -1,1 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>UNO Q - Éditeur de matrice 13x8 (Web)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: #222;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
 
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #matrix {
+      display: grid;
+      grid-template-columns: repeat(13, 40px);
+      grid-template-rows: repeat(8, 40px);
+      gap: 4px;
+      margin-bottom: 15px;
+    }
+
+    .cell {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      background-color: #000;
+      border: 1px solid #555;
+      box-sizing: border-box;
+      cursor: pointer;
+      transition: background-color 0.15s, transform 0.1s;
+    }
+
+    .cell.on {
+      background-color: #00aaff;
+      box-shadow: 0 0 8px #00aaff;
+    }
+
+    .cell:active {
+      transform: scale(0.95);
+    }
+
+    .buttons {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 6px 14px;
+      font-size: 0.95rem;
+      border-radius: 4px;
+      border: 1px solid #555;
+      background-color: #444;
+      color: #eee;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    #output {
+      width: 100%;
+      max-width: 800px;
+      height: 220px;
+      background-color: #111;
+      color: #0f0;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      border: 1px solid #555;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    .footer {
+      margin-top: 15px;
+      font-size: 0.8rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>UNO Q – Éditeur de matrice 13×8 (Web)</h1>
+  <div class="subtitle">
+    Cliquez sur les leds pour les allumer / éteindre, puis générez le code C++ pour <code>matrixWrite()</code>.
+  </div>
+
+  <div id="matrix"></div>
+
+  <div class="buttons">
+    <button id="btn-generate">Générer les 4 mots</button>
+    <button id="btn-clear">Effacer</button>
+    <button id="btn-copy">Copier</button>
+    <button id="btn-send">Envoyer vers UNO Q</button> <!-- NEW -->
+  </div>
+
+
+  <pre id="output">// Le code C++ généré apparaitra ici...</pre>
+
+  <div class="footer">
+    Génération de tableaux <code>uint32_t[4]</code> compatibles avec <code>matrixWrite()</code> pour la UNO Q.
+  </div>
+
+  <script>
+    const MATRIX_WIDTH = 13;
+    const MATRIX_HEIGHT = 8;
+
+    // Matrice logique : false = LED éteinte, true = LED allumée
+    const ledState = [];
+    for (let y = 0; y < MATRIX_HEIGHT; y++) {
+      const row = [];
+      for (let x = 0; x < MATRIX_WIDTH; x++) {
+        row.push(false);
+      }
+      ledState.push(row);
+    }
+
+    const matrixDiv = document.getElementById("matrix");
+    const output = document.getElementById("output");
+    const btnGenerate = document.getElementById("btn-generate");
+    const btnClear = document.getElementById("btn-clear");
+    const btnCopy = document.getElementById("btn-copy");
+
+    // Création de la grille de "leds"
+    function createGrid() {
+      for (let y = 0; y < MATRIX_HEIGHT; y++) {
+        for (let x = 0; x < MATRIX_WIDTH; x++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.dataset.x = x.toString();
+          cell.dataset.y = y.toString();
+
+          cell.addEventListener("click", () => {
+            const cx = parseInt(cell.dataset.x, 10);
+            const cy = parseInt(cell.dataset.y, 10);
+            ledState[cy][cx] = !ledState[cy][cx];
+            cell.classList.toggle("on", ledState[cy][cx]);
+          });
+
+          matrixDiv.appendChild(cell);
+        }
+      }
+    }
+
+    // Effacer toute la matrice
+    function clearMatrix() {
+      const cells = matrixDiv.querySelectorAll(".cell");
+      cells.forEach((cell) => {
+        cell.classList.remove("on");
+      });
+      for (let y = 0; y < MATRIX_HEIGHT; y++) {
+        for (let x = 0; x < MATRIX_WIDTH; x++) {
+          ledState[y][x] = false;
+        }
+      }
+      output.textContent = "// Matrice effacée.\n";
+    }
+      
+      // Calcule les 4 mots 32 bits a partir de ledState
+      function computeFrameWords() {
+        const out = [0, 0, 0, 0];
+
+        for (let y = 0; y < MATRIX_HEIGHT; y++) {
+          for (let x = 0; x < MATRIX_WIDTH; x++) {
+            if (!ledState[y][x]) continue;
+
+            const index = y * MATRIX_WIDTH + x; // 0..103
+            const mot = Math.floor(index / 32); // 0..3
+            const bit = index % 32;             // 0..31
+
+            out[mot] = (out[mot] | (1 << bit)) >>> 0;
+          }
+        }
+        return out;
+      }
+
+
+    // Générer les 4 mots de 32 bits et le code C++
+    // Générer le code C++ a partir des 4 mots
+    function generateWords() {
+      const out = computeFrameWords();
+
+      let text = "";
+      text += "// Tableau à transmettre à matrixWrite()\n";
+      text += "const uint32_t frame[4] = {\n";
+      for (let i = 0; i < 4; i++) {
+        const val = out[i];
+        const hex = val.toString(16).toUpperCase().padStart(8, "0");
+        const comma = i < 3 ? "," : "";
+        text += `    0x${hex}${comma}\n`;
+      }
+      text += "};\n";
+
+      output.textContent = text;
+    }
+
+      // Envoi de la frame vers UNO Q via WebUI -> Python -> Bridge
+      async function sendFrameToUnoQ() {
+        const out = computeFrameWords();
+
+        // URL de type /set_frame/w0/w1/w2/w3 (valeurs en decimal)
+        const url = `/set_frame/${out[0]}/${out[1]}/${out[2]}/${out[3]}`;
+
+        try {
+          const resp = await fetch(url);
+          if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}`);
+          }
+
+          let msg = "// Frame envoyee au UNO Q :\n";
+          msg += `// ${url}\n`;
+
+          // On essaye de lire la reponse JSON {status: "..."}
+          try {
+            const data = await resp.json();
+            msg += `// Reponse: ${JSON.stringify(data)}\n`;
+          } catch (_) {
+            msg += "// (Pas de JSON en reponse)\n";
+          }
+
+          output.textContent += "\n" + msg;
+        } catch (err) {
+          output.textContent += `\n// Erreur envoi frame: ${err.message}\n`;
+          console.error("Erreur envoi frame:", err);
+        }
+      }
+
+
+    // Copier le contenu généré
+    async function copyToClipboard() {
+      const text = output.textContent.trim();
+      if (!text) return;
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          // Fallback basique
+          const temp = document.createElement("textarea");
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+        }
+      } catch (e) {
+        console.error("Erreur de copie dans le presse-papiers :", e);
+      }
+    }
+
+    // Connexion des boutons
+    const btnSend = document.getElementById("btn-send");
+
+    btnGenerate.addEventListener("click", generateWords);
+    btnClear.addEventListener("click", clearMatrix);
+    btnCopy.addEventListener("click", copyToClipboard);
+    btnSend.addEventListener("click", sendFrameToUnoQ); // NEW
+
+    // Initialisation
+    createGrid();
+
+  </script>
+</body>
+</html>

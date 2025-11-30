@@ -198,6 +198,20 @@ Ajoutez simplement un fichier `LICENSE` si nécessaire.
 
 ---
 
-# 🔗 Aperçu
+# 🔗 Aperçus
+
+# Capture d'écran :
+
+![Exemple 1](Assets/capture1.png)
+
+
+![Exemple 1](Assets/capture2.jpg)
+
+---
+
+# Résultat :
+
+![Exemple 1](Assets/resultat.jpg)
+
 
 

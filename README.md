@@ -200,7 +200,7 @@ Ajoutez simplement un fichier `LICENSE` si nécessaire.
 
 # 🔗 Aperçus
 
-# Capture d'écran :
+# Captures d'écran :
 
 ![Exemple 1](Assets/capture1.png)
 

@@ -1,2 +1,203 @@
-# uno_q_matrix_webui_bridge
-UNO-Q pilotage de la matrice 13×8 via interface Web
+# UNO Q – WebUI → Python → Bridge → STM32 → MatrixWrite  
+### Exemple complet : pilotage de la matrice 13×8 via interface Web
+
+Ce dépôt démontre **toute la chaîne de communication interne de la carte Arduino UNO Q** :
+
+**WebUI (HTML/JS)**  
+→ **Python (App Lab)**  
+→ **Bridge RPC (MsgPack)**  
+→ **Firmware STM32**  
+→ **Fonction `matrixWrite()`**
+
+Grâce à cette interface Web, vous pouvez cliquer sur une matrice 13×8 et contrôler en temps réel l’affichage matériel de la UNO Q.
+
+---
+
+## 🎯 Objectifs du projet
+
+- Créer une interface Web permettant de cliquer sur les 104 LED de la matrice.
+- Convertir cet état en 4 mots `uint32_t`.
+- Transmettre ces valeurs au cœur Linux (Qualcomm QRB2210).
+- Envoyer ces valeurs vers le STM32 U585 via Bridge RPC.
+- Afficher les LEDs à l’aide de `matrixWrite()`.
+
+Ce projet constitue une démonstration claire de l’architecture **Linux ↔ Microcontrôleur** de la UNO Q.
+
+---
+
+# 🧩 Architecture de communication
+
+```
+              ┌───────────────────────────┐
+              │     WebUI (HTML / JS)     │
+              │  Interface matrice 13×8   │
+              └─────────────┬─────────────┘
+                            │  fetch("/set_frame/...")
+                            ▼
+              ┌───────────────────────────┐
+              │     Python (App Lab)      │
+              │ WebUI API + Bridge.call() │
+              └─────────────┬─────────────┘
+                            │  RPC MsgPack
+                            ▼
+              ┌───────────────────────────┐
+              │      STM32 Firmware       │
+              │ Bridge.provide + matrixWrite()
+              └───────────────────────────┘
+```
+
+---
+
+# 📂 Arborescence du dépôt
+
+```
+/
+├── README.md
+│
+├── webui/
+│   └── index.html      → Interface 13×8 en JavaScript
+│
+├── python/
+│   └── main.py         → WebUI API + Bridge RPC
+│
+└── mcu/
+    └── sketch.ino      → Réception des frames + matrixWrite()
+```
+
+---
+
+# 🖥️ 1. Interface Web (`webui/index.html`)
+
+L’interface Web fournit :
+
+- une grille 13×8 interactive,
+- un calculateur de mot de 32 bits (`uint32_t`),
+- un bouton **“Envoyer vers UNO Q”** qui effectue un fetch vers :
+
+```
+/set_frame/{w0}/{w1}/{w2}/{w3}
+```
+
+Chaque LED correspond à un bit dans les 4 mots de 32 bits.
+
+Les 104 LED sont indexées :
+
+```
+index = y * 13 + x
+mot  = index / 32
+bit  = index % 32
+```
+
+Ce fichier génère aussi le code C++ si nécessaire.
+
+---
+
+# 🐍 2. Couche Python (`python/main.py`)
+
+Le fichier Python utilise :
+
+- **WebUI** pour exposer une API REST locale,
+- **Bridge** pour transmettre les données au microcontrôleur STM32.
+
+Fonctions principales :
+
+```python
+ui.expose_api("GET", "/set_frame/{w0}/{w1}/{w2}/{w3}", on_set_frame)
+
+bridge.call("set_matrix_frame", v0, v1, v2, v3)
+```
+
+`main.py` agit comme un **pont** :  
+**JavaScript → Python → Bridge RPC → STM32**
+
+---
+
+# ⚙️ 3. Firmware STM32 (`mcu/sketch.ino`)
+
+Le STM32 expose la fonction RPC :
+
+```cpp
+Bridge.provide("set_matrix_frame", set_matrix_frame);
+```
+
+Et applique immédiatement la trame LED :
+
+```cpp
+matrixWrite(currentFrame);
+```
+
+Le tout se fait sans délai perceptible.
+
+---
+
+# 🚀 Comment tester dans Arduino App Lab ?
+
+1. Créer un projet App Lab.
+2. Ajouter le brick :
+   - ✔️ **WebUI – HTML**
+   - créé un répertoire : `assets/` puis un fichier `index.html`
+3. Coller les fichiers :
+   - `webui/index.html` dans `assets/`
+   - `python/main.py` dans `python/`
+   - `mcu/sketch.ino` dans `mcu/`
+4. Flasher le STM32.
+5. Cliquer sur “Run”.
+
+Votre interface Web s’affiche : chaque clic → changement visuel réel sur la UNO Q.
+
+---
+
+# 🧪 Exemples de trames envoyées
+
+LED en (0,0) uniquement :
+
+```
+/set_frame/1/0/0/0
+```
+
+Petite forme allumée :
+
+```
+/set_frame/2031617/1024/0/0
+```
+
+---
+
+# 💡 Notes importantes
+
+- La communication entre le MPU (Linux) et le MCU (STM32) s’appuie sur la couche Bridge RPC.
+- En interne, cette liaison peut s’appuyer sur un port UART ou un autre bus matériel,  
+  mais l’abstraction offerte rend ce détail transparent pour l’utilisateur.
+- Le Bridge utilise un protocole RPC interne basé sur **MsgPack**.
+- L’utilisateur n’a rien à configurer : App Lab gère les canaux.
+- Ce projet illustre parfaitement l’usage simultané :
+  - Web local,
+  - API REST,
+  - Python,
+  - Bridge RPC,
+  - STM32 HAL.
+
+---
+
+# 📄 Licence
+
+Vous pouvez utiliser :
+
+- MIT (recommandé)
+- Apache 2.0
+- GPLv3
+
+Ajoutez simplement un fichier `LICENSE` si nécessaire.
+
+---
+
+# 🙌 Auteurs
+
+- **Philippe86220** – conception WebUI, intégration Bridge, firmware STM32  
+- **ChatGPT** – collaboration technique, documentation et chaîne de communication UNO Q  
+
+---
+
+# 🔗 Aperçu
+
+

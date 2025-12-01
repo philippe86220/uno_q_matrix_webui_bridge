@@ -191,23 +191,6 @@ Le tout se fait sans délai perceptible.
 
 ---
 
-# 🚀 Comment tester dans Arduino App Lab ?
-
-1. Créer un projet App Lab.
-2. Ajouter le brick :
-   - ✔️ **WebUI – HTML**
-   - créé un répertoire : `assets/` puis un fichier `index.html`
-3. Coller les fichiers :
-   - `webui/index.html` dans `assets/`
-   - `python/main.py` dans `python/`
-   - `mcu/sketch.ino` dans `mcu/`
-4. Flasher le STM32.
-5. Cliquer sur “Run”.
-
-Votre interface Web s’affiche : chaque clic → changement visuel réel sur la UNO Q.
-
----
-
 # 🧪 Exemples de trames envoyées
 
 LED en (0,0) uniquement :

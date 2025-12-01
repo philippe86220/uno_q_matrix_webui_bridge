@@ -72,6 +72,59 @@ Ce projet constitue une démonstration claire de l’architecture **Linux ↔ Mi
 ```
 
 ---
+# 🚀 Getting Started (pas-à-pas)
+
+### 1️⃣ Créer une nouvelle application App Lab  
+Dans l’application Arduino, cliquer sur :  
+
+👉 Create new app +  
+
+### 2️⃣ Ajouter uniquement le brick WebUI – HTML  
+
+C’est le seul brick nécessaire pour l’interface Web. 
+
+### 3️⃣ Ajouter le fichier index.html dans le dossier assets/  
+
+App Lab crée automatiquement :  
+- python/main.py  
+- sketch/sketch.ino  
+
+👉 Le seul élément à ajouter est assets/index.html.  
+
+Pour cela :  
+
+1. Cliquer sur l’icône située à droite du mot “Files” (icône dossier +).
+2. Choisir Create new folder.
+3. Saisir exactement :
+```text
+assets/index.html
+```
+4. App Lab crée automatiquement :
+- le dossier assets,
+- le fichier index.html à l’intérieur.
+### 4️⃣ Coller les fichiers du dépôt GitHub
+- Dans assets/index.html → coller le contenu du fichier webui/index.html du dépôt GitHub  
+- Dans python/main.py → coller le contenu du fichier python/main.py du dépôt  
+- Dans sketch/sketch.ino → coller le contenu de mcu/sketch.ino
+  
+### 5️⃣ Lancer l'application
+Appuyer sur RUN.  
+
+App Lab va automatiquement :  
+
+1. Servir index.html via WebUI  
+2. Exécuter main.py sur le cœur Linux  
+3. Compiler et transférer sketch.ino dans le STM32  
+4. Établir la communication Bridge Linux ↔ STM32
+
+### 6️⃣ Tester
+
+- La WebUI apparaît  
+- Cliquez sur les LEDs 13×8  
+- Cliquez sur Envoyer vers UNO Q  
+- Les LEDs de la matrice s’allument immédiatement  
+
+---
 
 # 🖥️ 1. Interface Web (`webui/index.html`)
 

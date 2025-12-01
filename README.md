@@ -1,15 +1,22 @@
 # UNO Q – WebUI → Python → Bridge → STM32 → MatrixWrite  
-### Exemple complet : pilotage de la matrice 13×8 via interface Web
 
-Ce dépôt démontre **toute la chaîne de communication interne de la carte Arduino UNO Q** :
+# 🧩 Fonctionnement 100 % dans Arduino App Lab
+Ce projet fonctionne entièrement à l’intérieur d’Arduino App Lab, sans logiciel externe ni serveur  
+supplémentaire.
+- La brique WebUI – HTML affiche l’interface 13×8 dans le navigateur.
+- Le fichier Python (main.py) intercepte les appels envoyés par l’interface Web.
+- Python utilise Bridge RPC pour transmettre les données au STM32.
+- Le STM32 affiche le motif via la fonction interne `matrixWrite()`.
+  
+Ainsi, la chaîne complète reste locale à la UNO Q :
 
-**WebUI (HTML/JS)**  
-→ **Python (App Lab)**  
-→ **Bridge RPC (MsgPack)**  
-→ **Firmware STM32**  
-→ **Fonction `matrixWrite()`**
+WebUI (HTML/JS)  
+→ Python (App Lab)  
+→ Bridge RPC  
+→ STM32 Firmware  
+→ matrixWrite()  
 
-Grâce à cette interface Web, vous pouvez cliquer sur une matrice 13×8 et contrôler en temps réel l’affichage matériel de la UNO Q.
+Grâce à cette interface Web locale, vous pouvez cliquer sur une matrice 13×8 et contrôler en temps réel l’affichage matériel de la UNO Q.
 
 ---
 

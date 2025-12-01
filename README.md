@@ -3,7 +3,7 @@
 # 🧩 Fonctionnement 100 % dans Arduino App Lab
 Ce projet fonctionne entièrement à l’intérieur d’Arduino App Lab, sans logiciel externe ni serveur  
 supplémentaire.
-- Le Brick `WebUI – HTML` affiche l’interface 13×8 dans le navigateur.
+- Le brick `WebUI – HTML` affiche l’interface 13×8 dans le navigateur.
 - Le fichier Python (main.py) intercepte les appels envoyés par l’interface Web.
 - Python utilise Bridge RPC pour transmettre les données au STM32.
 - Le STM32 affiche le motif via la fonction interne `matrixWrite()`.
@@ -102,7 +102,7 @@ assets/index.html
 4. App Lab crée automatiquement :
 - le dossier **assets**,
 - le fichier **index.html** à l’intérieur.
-- 
+  
 ### 4️⃣ Coller les fichiers du dépôt GitHub
 - Dans `assets/index.html` → coller le contenu du fichier `webui/index.html` du dépôt GitHub  
 - Dans `python/main.py` → coller le contenu du fichier `python/main.py` du dépôt  

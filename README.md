@@ -207,19 +207,26 @@ Petite forme allumée :
 
 ---
 
-# 💡 Notes importantes
+# 💡 Notes importantes sur la communication interne :
 
-- La communication entre le MPU (Linux) et le MCU (STM32) s’appuie sur la couche Bridge RPC.
-- En interne, cette liaison peut s’appuyer sur un port UART ou un autre bus matériel,  
-  mais l’abstraction offerte rend ce détail transparent pour l’utilisateur.
-- Le Bridge utilise un protocole RPC interne basé sur **MsgPack**.
-- L’utilisateur n’a rien à configurer : App Lab gère les canaux.
-- Ce projet illustre parfaitement l’usage simultané :
-  - Web local,
-  - API REST,
-  - Python,
-  - Bridge RPC,
-  - STM32 HAL.
+• La communication entre le MPU (Linux) et le MCU (STM32) repose sur la couche Bridge,  
+  qui met en œuvre un mécanisme de type RPC interne.
+
+• Les données échangées sont sérialisées en MessagePack.
+
+• Le transport matériel exact (UART interne ou autre bus) n’est pas exposé :  
+  la couche Bridge abstrait complètement cette liaison.
+
+• L’utilisateur n’a aucun paramétrage à faire :  
+  App Lab installe automatiquement les canaux et initialise Bridge.
+
+• Ce projet illustre l’utilisation coordonnée de :  
+  – une interface Web locale (WebUI – HTML),   
+  – une API REST interne (App Lab),  
+  – un traitement Python,  
+  – la couche Bridge RPC,  
+  – le firmware STM32 et la fonction matrixWrite().
+
 
 ---
 

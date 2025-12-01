@@ -1,5 +1,8 @@
 # UNO Q – WebUI → Python → Bridge → STM32 → MatrixWrite  
 
+![Présentation](Assets/image.png)
+
+
 # 🧩 Fonctionnement 100 % dans Arduino App Lab
 Ce projet fonctionne entièrement à l’intérieur d’Arduino App Lab, sans logiciel externe ni serveur  
 supplémentaire.

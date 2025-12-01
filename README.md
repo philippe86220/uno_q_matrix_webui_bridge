@@ -109,7 +109,7 @@ assets/index.html
 - Dans `sketch/sketch.ino` → coller le contenu de `mcu/sketch.ino`
   
 ### 5️⃣ Lancer l'application
-Appuyer sur **RUN**.  
+Cliquer sur **RUN**.  
 
 App Lab va automatiquement :  
 

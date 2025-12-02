@@ -123,10 +123,16 @@ App Lab va automatiquement :
 
 ### 6️⃣ Tester
 
-- La WebUI apparaît  
-- Cliquez sur les LEDs 13×8  
-- Cliquez sur **Envoyer vers UNO Q**  
-- Les LEDs de la matrice s’allument immédiatement  
+- Cliquez sur RUN dans App Lab.
+- Dans la console Python, repérez la ligne :
+
+      Network URL: http://xxx.xxx.xxx.xxx:2000
+
+- Ouvrez cette adresse dans votre navigateur (Chrome, Safari, Firefox).
+- La WebUI apparaît.
+- Cliquez sur les LEDs 13×8.
+- Cliquez sur **Envoyer vers UNO Q**.
+- Les LEDs de la matrice s’allument immédiatement.
 
 ---
 

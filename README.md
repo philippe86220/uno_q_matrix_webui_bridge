@@ -234,7 +234,7 @@ Petite forme allumée :
   – une API REST interne (App Lab),  
   – un traitement Python,  
   – la couche Bridge RPC,  
-  – le firmware STM32 et la fonction 
+  – le firmware STM32 et la fonction matrixWrite().
 
 ---
 

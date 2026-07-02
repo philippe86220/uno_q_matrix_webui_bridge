@@ -234,20 +234,7 @@ Petite forme allumée :
   – une API REST interne (App Lab),  
   – un traitement Python,  
   – la couche Bridge RPC,  
-  – le firmware STM32 et la fonction matrixWrite().
-
-
----
-
-# 📄 Licence
-
-Vous pouvez utiliser :
-
-- MIT (recommandé)
-- Apache 2.0
-- GPLv3
-
-Ajoutez simplement un fichier `LICENSE` si nécessaire.
+  – le firmware STM32 et la fonction 
 
 ---
 
